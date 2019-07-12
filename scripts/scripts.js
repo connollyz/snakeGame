@@ -7,10 +7,26 @@ const box = 32;
 // load images
 
 const donut = new Image();
-donut.src = "assets/donut.png";
+donut.src = "assets/gfx/donut.png";
 
 const ground = new Image();
-ground.src = "assets/ground.png";
+ground.src = "assets/gfx/ground.png";
+
+//load audio files
+const dead = new Audio();
+const eat = new Audio();
+const up = new Audio();
+const left = new Audio();
+const right = new Audio();
+const down = new Audio();
+
+dead.src = 'assets/audio/dead.mp3';
+eat.src ='assets/audio/eat.mp3';
+up.src = 'assets/audio/up.mp3';
+left.src = 'assets/audio/left.mp3';
+right.src = 'assets/audio/right.mp3';
+down.src = 'assets/audio/down.mp3';
+
 
 // create the snake
 
@@ -41,17 +57,17 @@ document.addEventListener("keydown", direction);
 function direction(event) {
     let key = event.keyCode;
     if (key == 37 && d != "RIGHT") {
-      
         d = "LEFT";
+        left.play();
     } else if (key == 38 && d != "DOWN") {
         d = "UP";
-  
+        up.play();
     } else if (key == 39 && d != "LEFT") {
         d = "RIGHT";
-  
+        right.play()
     } else if (key == 40 && d != "UP") {
         d = "DOWN";
-
+        down.play();
     }
 }
 
@@ -74,7 +90,6 @@ function draw() {
     for (let i = 0; i < snake.length; i++) {
         ctx.fillStyle = (i == 0) ? "hotpink" : "pink";
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
-
         ctx.strokeStyle = "hotpink";
         ctx.strokeRect(snake[i].x, snake[i].y, box, box);
     }
@@ -94,6 +109,7 @@ function draw() {
     // if the snake eats the food
     if (snakeX == food.x && snakeY == food.y) {
         score++;
+        eat.play();
         food = {
             x: Math.floor(Math.random() * 17 + 1) * box,
             y: Math.floor(Math.random() * 15 + 3) * box
@@ -115,12 +131,13 @@ function draw() {
 
     if (snakeX < 0 || snakeX > 18 * box || snakeY < 0 * box || snakeY > 18 * box || collision(newHead, snake)) {
         clearInterval(game);
+        dead.play();
        
     }
 
     snake.unshift(newHead);
 
-    ctx.fillStyle = "hotmpink";
+    ctx.fillStyle = "hotpink";
     ctx.font = "45px Changa one";
     ctx.fillText(score, 2 * box, 1.6 * box);
 }
